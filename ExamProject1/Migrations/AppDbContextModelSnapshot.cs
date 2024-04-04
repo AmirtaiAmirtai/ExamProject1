@@ -41,7 +41,7 @@ namespace ExamProject1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Leads");
+                    b.ToTable("Leads", (string)null);
                 });
 
             modelBuilder.Entity("ExamProject1.Models.Contact", b =>
@@ -81,7 +81,7 @@ namespace ExamProject1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("ExamProject1.Models.Sale", b =>
@@ -105,7 +105,7 @@ namespace ExamProject1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sales");
+                    b.ToTable("Sales", (string)null);
                 });
 
             modelBuilder.Entity("ExamProject1.Models.User", b =>
@@ -135,7 +135,7 @@ namespace ExamProject1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }
