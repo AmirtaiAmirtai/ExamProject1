@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamProject1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240401174704_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240404145422_inbadvbajfwwfw")]
+    partial class inbadvbajfwwfw
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,10 @@ namespace ExamProject1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("SellerId");
+
                     b.ToTable("Leads");
                 });
 
@@ -68,7 +72,6 @@ namespace ExamProject1.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -84,6 +87,8 @@ namespace ExamProject1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MarketologId");
+
                     b.ToTable("Contacts");
                 });
 
@@ -98,15 +103,17 @@ namespace ExamProject1.Migrations
                     b.Property<DateTime>("AgreementDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LeadId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LeadId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("SellerId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LeadId");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Sales");
                 });
@@ -139,6 +146,65 @@ namespace ExamProject1.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ExamProject.Models.Lead", b =>
+                {
+                    b.HasOne("ExamProject1.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExamProject1.Models.User", "Seller")
+                        .WithMany("Leads")
+                        .HasForeignKey("SellerId");
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("ExamProject1.Models.Contact", b =>
+                {
+                    b.HasOne("ExamProject1.Models.User", "Marketolog")
+                        .WithMany("Contacts")
+                        .HasForeignKey("MarketologId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Marketolog");
+                });
+
+            modelBuilder.Entity("ExamProject1.Models.Sale", b =>
+                {
+                    b.HasOne("ExamProject.Models.Lead", "Lead")
+                        .WithMany("Sales")
+                        .HasForeignKey("LeadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExamProject1.Models.User", "Seller")
+                        .WithMany("Sales")
+                        .HasForeignKey("SellerId");
+
+                    b.Navigation("Lead");
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("ExamProject.Models.Lead", b =>
+                {
+                    b.Navigation("Sales");
+                });
+
+            modelBuilder.Entity("ExamProject1.Models.User", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Leads");
+
+                    b.Navigation("Sales");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,16 +1,14 @@
-﻿using ExamProject1.Models;
+﻿using AutoMapper;
 using ExamProject1.Dto;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using AutoMapper;
+using ExamProject1.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Security.Claims;
 
 namespace ExamProject1.Services;
 
-public class UserService {
+public class UserService
+{
     private readonly AppDbContext _dbContext;
-    private readonly HttpContext _httpContext;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -19,13 +17,6 @@ public class UserService {
         _dbContext = dbContext;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
-
-        if (accessor.HttpContext is null)
-        {
-            throw new ArgumentException(nameof(accessor.HttpContext));
-        }
-
-        _httpContext = accessor.HttpContext;
     }
 
     public async Task<List<UserGetDto>> GetAllAsync()
@@ -68,31 +59,18 @@ public class UserService {
     }
 
     public User GetUserById(string userId)
-{
-    if (!int.TryParse(userId, out int userIdInt))
     {
-            // Если не удалось преобразовать userId в int, вернуть null или обработать ошибку по вашему усмотрению
+        if (!int.TryParse(userId, out int userIdInt))
+        {
             throw new InvalidOperationException("User not found");
         }
-    var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
-    return user;
-}
-    private async Task<UserGetDto?> FindUserByEmailAndPasswordAsync(string email, string password)
-    {
-        // Поиск пользователя по электронной почте и паролю
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-
-        if (user == null)
-            throw new InvalidOperationException("User not found");
-        // Возвращаем только данные пользователя, без пароля
-        return user != null ? new UserGetDto { Id = user.Id, Email = user.Email, Role = user.Role } : null;
+        var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
+        return user;
     }
-
     public User ChangeRoleAsync(string userId, int role)
     {
         if (!int.TryParse(userId, out int userIdInt))
         {
-            // Если не удалось преобразовать userId в int, вернуть null или обработать ошибку по вашему усмотрению
             throw new InvalidOperationException("User not found");
         }
         Enums.Role newRole = (Enums.Role)role;
@@ -100,28 +78,25 @@ public class UserService {
         var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
         if (user != null)
         {
-            // Устанавливаем новую роль для пользователя
             user.Role = newRole;
-            _dbContext.SaveChanges(); // Сохраняем изменения в базе данных
+            _dbContext.SaveChanges();
         }
 
         return user;
-        return user;
     }
-    public User ChangePasswordAsync(string userId, string password)
+    public async Task<User> ChangePasswordAsync(string userId, string password)
     {
         if (!int.TryParse(userId, out int userIdInt))
         {
-            // Если не удалось преобразовать userId в int, вернуть null или обработать ошибку по вашему усмотрению
             throw new InvalidOperationException("User not found");
         }
-        var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
 
         if (user != null)
         {
-            // Устанавливаем новую роль для пользователя
             user.Password = password;
-            _dbContext.SaveChanges(); // Сохраняем изменения в базе данных
+            await _dbContext.SaveChangesAsync();
         }
 
         return user;
@@ -131,16 +106,14 @@ public class UserService {
     {
         if (!int.TryParse(userId, out int userIdInt))
         {
-            // Если не удалось преобразовать userId в int, вернуть null или обработать ошибку по вашему усмотрению
             throw new InvalidOperationException("User not found");
         }
         var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
 
         if (user != null)
         {
-            // Устанавливаем новую роль для пользователя
             user.BanDate = DateTime.Now;
-            _dbContext.SaveChanges(); // Сохраняем изменения в базе данных
+            _dbContext.SaveChanges();
         }
 
         return user;

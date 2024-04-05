@@ -11,17 +11,13 @@ namespace ExamProject1.Controllers;
 public class UserController : ControllerBase
 {
 
-    private readonly AppDbContext _context;
     private readonly UserService _userService;
     private readonly AuthService _authService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserController(AppDbContext context, AuthService authService, UserService userService, IHttpContextAccessor httpContextAccessor)
+    public UserController(AuthService authService, UserService userService)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-        _context = context;
         _authService = authService;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     [AllowAnonymous]
@@ -51,7 +47,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("change-role")]
+    [HttpPatch("change-role")]
     public async Task<IActionResult> ChangeRole(string id, int role)
     {
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -69,8 +65,9 @@ public class UserController : ControllerBase
 
         return Ok($"User role changed successfully to {role}");
     }
+
     [Authorize]
-    [HttpPost("change-password")]
+    [HttpPatch("change-password")]
     public async Task<IActionResult> ChangePassword(string password)
     {
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -79,19 +76,19 @@ public class UserController : ControllerBase
             return Unauthorized("no");
         }
 
-        // Здесь вы можете использовать идентификатор пользователя для получения данных из базы данных или другого источника данных
         var userData = _userService.GetUserById(userId);
 
         if (userData == null)
         {
             return NotFound();
         }
-        _userService.ChangePasswordAsync(userId, password);
+
+        await _userService.ChangePasswordAsync(userId, password);
         return Ok($"User password changed successfully to {password}");
     }
 
-    [Authorize]
-    [HttpPost("ban-someone")]
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("ban-someone")]
     public async Task<IActionResult> Ban(string id)
     {
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -99,7 +96,7 @@ public class UserController : ControllerBase
 
         if (userId == id)
         {
-            return BadRequest("You can't change your own role");
+            return BadRequest("You can't ban yourself");
         }
 
         var changedUser = _userService.ChangeBanDateAsync(id);
@@ -111,6 +108,7 @@ public class UserController : ControllerBase
 
         return Ok($"User {userData.FullName} has successfully recieved a new ban date: {DateTime.Now}");
     }
+
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(string id)
@@ -140,14 +138,12 @@ public class UserController : ControllerBase
     [HttpGet("data")]
     public IActionResult GetUserData()
     {
-        // Получаем идентификатор пользователя из куки
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
         {
             return Unauthorized("no");
         }
 
-        // Здесь вы можете использовать идентификатор пользователя для получения данных из базы данных или другого источника данных
         var userData = _userService.GetUserById(userId);
 
         if (userData == null)
@@ -158,10 +154,4 @@ public class UserController : ControllerBase
         return Ok(userData);
     }
 
-}
-
-public class UserLoginRequest
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
 }
