@@ -30,6 +30,13 @@ namespace ExamProject1.Services
         public async Task<Contact> CreateContactAsync(ContactCreateDto contactDto)
         {
             _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Contacts ON");
+
+            var marketolog = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == contactDto.MarketologId);
+            if (marketolog == null)
+            {
+                throw new InvalidOperationException("Marketolog with the specified ID not found");
+            }
+
             if (await _dbContext.Contacts.AnyAsync(u => u.Email == contactDto.Email))
                 throw new InvalidOperationException("Contact with this email already exists");
 

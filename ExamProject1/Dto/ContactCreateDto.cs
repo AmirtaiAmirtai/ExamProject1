@@ -6,6 +6,8 @@ namespace ExamProject1.Dto
     public class ContactCreateDto
     {
         [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
+        public required int MarketologId { get; set; }
+        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
         [StringLength(50, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
         [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Поле {0} должно содержать только буквы.")]
         public required string Name { get; set; }
