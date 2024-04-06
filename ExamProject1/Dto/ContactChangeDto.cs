@@ -5,28 +5,29 @@ namespace ExamProject1.Dto
 {
     public class ContactChangeDto
     {
-        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
+        [Required(ErrorMessage = "{0} cannot be empty.", AllowEmptyStrings = false)]
         public required int MarketologId { get; set; }
-        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
-        [StringLength(50, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Поле {0} должно содержать только буквы.")]
+
+        [Required(ErrorMessage = "{0} cannot be empty.", AllowEmptyStrings = false)]
+        [StringLength(50, ErrorMessage = "Field {0} must not exceed {1} characters.")]
+        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Field {0} must contain only letters.")]
         public required string Name { get; set; }
 
-        [StringLength(50, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Поле {0} должно содержать только буквы.")]
+        [StringLength(50, ErrorMessage = "Field {0} must not exceed {1} characters.")]
+        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Field {0} must contain only letters.")]
         public string? Surname { get; set; }
 
-        [StringLength(50, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Поле {0} должно содержать только буквы.")]
+        [StringLength(50, ErrorMessage = "Field {0} must not exceed {1} characters.")]
+        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Field {0} must contain only letters.")]
         public string? MiddleName { get; set; }
 
-        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
-        [StringLength(10, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Поле {0} должно содержать только цифры.")]
+        [Required(ErrorMessage = "Field {0} cannot be empty.", AllowEmptyStrings = false)]
+        [StringLength(10, ErrorMessage = "Field {0} must not exceed {1} characters.")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Field {0} must contain only digits.")]
         public required string PhoneNumber { get; set; }
 
-        [EmailAddress(ErrorMessage = "Поле {0} содержит некорректный формат.")]
-        [StringLength(200, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
+        [EmailAddress(ErrorMessage = "Field {0} has an incorrect format.")]
+        [StringLength(200, ErrorMessage = "Field {0} must not exceed {1} characters.")]
         public string? Email { get; set; }
         public required ContactStatus ContactStatus { get; set; }
     }

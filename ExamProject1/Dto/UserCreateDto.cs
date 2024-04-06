@@ -5,20 +5,19 @@ namespace ExamProject1.Dto
 {
     public class UserCreateDto
     {
-
         public string? FullName { get; set; }
 
-        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
-        [EmailAddress(ErrorMessage = "Поле {0} содержит некорректный формат.")]
-        [StringLength(200, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
+        [Required(ErrorMessage = "Field {0} cannot be empty.", AllowEmptyStrings = false)]
+        [EmailAddress(ErrorMessage = "Field {0} has an incorrect format.")]
+        [StringLength(200, ErrorMessage = "Field {0} must not exceed {1} characters.")]
         public required string Email { get; set; }
 
-        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Поле {0} должно содержать только буквы и цифры.")]
-        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
-        [StringLength(10, ErrorMessage = "Поле {0} не должно превышать {1} символов.")]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Field {0} must contain only letters and digits.")]
+        [Required(ErrorMessage = "Field {0} cannot be empty.", AllowEmptyStrings = false)]
+        [StringLength(10, ErrorMessage = "Field {0} must not exceed {1} characters.")]
         public required string Password { get; set; }
 
-        [Required(ErrorMessage = "Поле {0} не может быть пустым.", AllowEmptyStrings = false)]
+        [Required(ErrorMessage = "Field {0} cannot be empty.")]
         public required Role Role { get; set; }
     }
 }

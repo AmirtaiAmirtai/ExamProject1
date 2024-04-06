@@ -21,8 +21,7 @@ public class UserService
 
     public async Task<List<UserGetDto>> GetAllAsync()
     {
-        var users = _dbContext.Users.ToList();
-
+        var users = await _dbContext.Users.ToListAsync();
         var usersDtos = _mapper.Map<List<UserGetDto>>(users);
 
         return usersDtos;
@@ -55,6 +54,7 @@ public class UserService
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
         var deletedUserName = user.FullName;
+
         return deletedUserName;
     }
 
@@ -65,6 +65,7 @@ public class UserService
             throw new InvalidOperationException("User not found");
         }
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
+
         return user;
     }
 

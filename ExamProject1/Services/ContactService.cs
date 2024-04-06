@@ -17,16 +17,19 @@ namespace ExamProject1.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
+
         public async Task<List<Contact>> GetAllAsync()
         {
-            var contacts = _dbContext.Contacts.ToList();
+            var contacts = await _dbContext.Contacts.ToListAsync();
             return contacts;
         }
+
         public async Task<List<Contact>> GetLeadsAsync()
         {
-            var leadContacts = _dbContext.Contacts.Where(x => x.ContactStatus == (ContactStatus)2).ToList();
+            var leadContacts = await _dbContext.Contacts.Where(x => x.ContactStatus == (ContactStatus)2).ToListAsync();
             return leadContacts;
         }
+
         public async Task<Contact> CreateContactAsync(ContactCreateDto contactDto)
         {
             _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Contacts ON");
@@ -47,6 +50,7 @@ namespace ExamProject1.Services
             _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Contacts OFF");
             return newContact;
         }
+
         public async Task<Contact> ChangeStatusAsync(string contactId, int status)
         {
             if (!int.TryParse(contactId, out int contactIdInt))
