@@ -58,16 +58,17 @@ public class UserService
         return deletedUserName;
     }
 
-    public User GetUserById(string userId)
+    public async Task<User> GetUserByIdAsync(string userId)
     {
         if (!int.TryParse(userId, out int userIdInt))
         {
             throw new InvalidOperationException("User not found");
         }
-        var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
         return user;
     }
-    public User ChangeRoleAsync(string userId, int role)
+
+    public async Task<User> ChangeRoleAsync(string userId, int role)
     {
         if (!int.TryParse(userId, out int userIdInt))
         {
@@ -75,15 +76,16 @@ public class UserService
         }
         Enums.Role newRole = (Enums.Role)role;
 
-        var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
         if (user != null)
         {
             user.Role = newRole;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         return user;
     }
+
     public async Task<User> ChangePasswordAsync(string userId, string password)
     {
         if (!int.TryParse(userId, out int userIdInt))
@@ -102,18 +104,18 @@ public class UserService
         return user;
     }
 
-    public User ChangeBanDateAsync(string userId)
+    public async Task<User> ChangeBanDateAsync(string userId)
     {
         if (!int.TryParse(userId, out int userIdInt))
         {
             throw new InvalidOperationException("User not found");
         }
-        var user = _dbContext.Users.FirstOrDefault(u => u.Id == userIdInt);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
 
         if (user != null)
         {
             user.BanDate = DateTime.Now;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         return user;

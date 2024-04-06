@@ -67,7 +67,7 @@ namespace ExamProject1.Services
             return contact;
         }
 
-        public async Task<IActionResult> UpdateContact(int contactId, ContactChangeDto contactDto)
+        public async Task<IActionResult> UpdateContactAsync(int contactId, ContactChangeDto contactDto)
         {
             var existingContact = await _dbContext.Contacts.FindAsync(contactId);
 

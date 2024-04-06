@@ -37,6 +37,26 @@ public class UserController : ControllerBase
         return Ok(userDtos);
     }
 
+    [Authorize]
+    [HttpGet("data")]
+    public IActionResult GetUserData()
+    {
+        var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("no");
+        }
+
+        var userData = _userService.GetUserByIdAsync(userId);
+
+        if (userData == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(userData);
+    }
+
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateUser(UserCreateDto userCreate)
@@ -56,13 +76,7 @@ public class UserController : ControllerBase
             return BadRequest("You can't change your own role");
         }
 
-        var changedUser = _userService.ChangeRoleAsync(id, role);
-
-        if (changedUser == null)
-        {
-            return NotFound($"User with ID {id} not found");
-        }
-
+        await _userService.ChangeRoleAsync(id, role);
         return Ok($"User role changed successfully to {role}");
     }
 
@@ -76,7 +90,7 @@ public class UserController : ControllerBase
             return Unauthorized("no");
         }
 
-        var userData = _userService.GetUserById(userId);
+        var userData = _userService.GetUserByIdAsync(userId);
 
         if (userData == null)
         {
@@ -88,25 +102,25 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPatch("ban-someone")]
+    [HttpPatch("ban")]
     public async Task<IActionResult> Ban(string id)
     {
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var userData = _userService.GetUserById(userId);
+        var userData = await _userService.GetUserByIdAsync(userId);
 
         if (userId == id)
         {
             return BadRequest("You can't ban yourself");
         }
 
-        var changedUser = _userService.ChangeBanDateAsync(id);
+        var changedUser = await _userService.ChangeBanDateAsync(id);
 
         if (changedUser == null)
         {
             return NotFound($"User with ID {id} not found");
         }
 
-        return Ok($"User {userData.FullName} has successfully recieved a new ban date: {DateTime.Now}");
+        return Ok($"User {userData.FullName} has successfully received a new ban date: {DateTime.Now}");
     }
 
     [Authorize(Roles = "Admin")]
@@ -132,26 +146,6 @@ public class UserController : ControllerBase
         {
             return NotFound(ex.Message);
         }
-    }
-
-    [Authorize]
-    [HttpGet("data")]
-    public IActionResult GetUserData()
-    {
-        var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userId))
-        {
-            return Unauthorized("no");
-        }
-
-        var userData = _userService.GetUserById(userId);
-
-        if (userData == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(userData);
     }
 
 }

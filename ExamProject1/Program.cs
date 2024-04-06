@@ -22,6 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<ContactService>();
+builder.Services.AddTransient<LeadService>();
 
 builder.Services.AddAuthentication()
     .AddCookie("Cookies", opts =>

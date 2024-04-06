@@ -20,15 +20,15 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet("all")]
-    //[Authorize(Roles = "Admin")]
-    public async Task<IActionResult> GetAll()
+    [Authorize(Roles = "Admin, Marketing")]
+    public async Task<IActionResult> GetAllAsync()
     {
         var contacts = await _contactService.GetAllAsync().ConfigureAwait(false);
         return Ok(contacts);
     }
 
     [HttpGet("leads")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Marketing")]
     public async Task<IActionResult> GetLeadsAsync()
     {
         var leads = await _contactService.GetLeadsAsync().ConfigureAwait(false);
@@ -36,14 +36,16 @@ public class ContactController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateContact(ContactCreateDto contactDto)
+    [Authorize(Roles = "Marketing")]
+    public async Task<IActionResult> CreateContactAsync(ContactCreateDto contactDto)
     {
         var newContact = await _contactService.CreateContactAsync(contactDto);
         return Ok("Added");
     }
 
     [HttpPatch("change-contact-status")]
-    public async Task<IActionResult> ChangeContactStatus(string id, int newStatus)
+    [Authorize(Roles = "Marketing")]
+    public async Task<IActionResult> ChangeContactStatusAsync(string id, int newStatus)
     {
         var changedContact = await _contactService.ChangeStatusAsync(id, newStatus);
         if (changedContact == null)
@@ -54,14 +56,15 @@ public class ContactController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateContact(int id, ContactChangeDto contactDto)
+    [Authorize(Roles = "Marketing, Sales")]
+    public async Task<IActionResult> ChangeContactAsync(int id, ContactChangeDto contactDto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var result = await _contactService.UpdateContact(id, contactDto);
+        var result = await _contactService.UpdateContactAsync(id, contactDto);
 
         return result;
     }
