@@ -7,8 +7,8 @@ using System.Security.Claims;
 
 namespace ExamProject1.Controllers;
 
-[Route("api/contact")]
 [ApiController]
+[Route("api/Contact")]
 public class ContactController : ControllerBase
 {
     private readonly AppDbContext _dbContext;

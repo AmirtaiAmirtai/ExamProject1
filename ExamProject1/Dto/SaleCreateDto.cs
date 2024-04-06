@@ -1,15 +1,12 @@
 ﻿using ExamProject.Models;
+using ExamProject1.Models;
 
-namespace ExamProject1.Models
+namespace ExamProject1.Dto
 {
-    public class Sale
+    public class SaleCreateDto
     {
-
-        public int Id { get; set; }
         public required int LeadId { get; set; }
         public required int? SellerId { get; set; }
         public required DateTime AgreementDate { get; set; }
-        public Lead Lead { get; set; }
-        public User Seller { get; set; }
     }
 }

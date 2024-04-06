@@ -38,7 +38,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("data")]
+    [HttpGet("my-data")]
     public IActionResult GetUserData()
     {
         var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -51,6 +51,7 @@ public class UserController : ControllerBase
 
         if (userData == null)
         {
+
             return NotFound();
         }
 

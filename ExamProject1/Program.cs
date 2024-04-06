@@ -23,6 +23,7 @@ builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<ContactService>();
 builder.Services.AddTransient<LeadService>();
+builder.Services.AddTransient<SaleSevice>();
 
 builder.Services.AddAuthentication()
     .AddCookie("Cookies", opts =>

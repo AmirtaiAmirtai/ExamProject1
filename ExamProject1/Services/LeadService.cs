@@ -8,7 +8,6 @@ namespace ExamProject1.Services
     public class LeadService
     {
         private readonly AppDbContext _dbContext;
-        private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LeadService(AppDbContext dbContext, IHttpContextAccessor httpContext)
@@ -20,11 +19,6 @@ namespace ExamProject1.Services
         public async Task<List<Lead>> GetLeadsForCurrentUser()
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
-            {
-                return new List<Lead>();
-            }
 
             int intId = int.Parse(userId);
             var leads = await _dbContext.Leads

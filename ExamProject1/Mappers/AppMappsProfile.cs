@@ -12,6 +12,7 @@ namespace ExamProject1.Mappers
             CreateMap<UserCreateDto, User>().ReverseMap();
             CreateMap<ContactCreateDto, Contact>().ReverseMap();
             CreateMap<ContactChangeDto, Contact>().ReverseMap();
+            CreateMap<SaleCreateDto, Sale>().ReverseMap();
         }
     }
 }
